@@ -1,0 +1,24 @@
+{
+  "name": "mynotes-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asm2212/MyNotes-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asm2212/MyNotes-App/issues"
+  },
+  "homepage": "https://github.com/asm2212/MyNotes-App#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
