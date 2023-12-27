@@ -1,9 +1,15 @@
 const express = require("express");
+const cors = require("cors");
 const { connection } = require("./db");
-require("dotenv").config
+const { userRouter } = require("./routes/user.routes");
+const { noteRouter } = require("./routes/note.routes");
+require("dotenv").config();
 const port = process.env.PORT
 const app = express()
-
+app.use(cors())
+app.use(express.json())
+app.use("/user",userRouter)
+app.use("/note",noteRouter)
 app.get('/', (req, res) => {
 
     res.send({
