@@ -19,6 +19,7 @@ import {
   Center,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { useNavigate } from 'react-router'
 
 interface Props {
   children: React.ReactNode
@@ -29,17 +30,27 @@ interface Props {
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const nav = useNavigate()
   return (
     <>
       <Box zIndex={1000} position={"fixed"} w={"100%"} box-shadow={"rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"}  bg={"yellow"} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box fontWeight={"bold"} color="green">Note App</Box>
+          <Box fontWeight={"bold"} cursor={"pointer"} onClick={()=>{
+            nav("/")
+          }} color="green">Notes App</Box>
 
-          <Flex alignItems={'center'}>
+          <Flex alignItems={'center'}> 
             <Stack alignItems={"center"} direction={'row'} spacing={7}>
-            <Button bg={"yellow"}m color={"green"}>All Notes</Button>
-            <Button bg={"yellow"}m color={"green"}>Login</Button>
-            <Button bg={"yellow"}m color={"green"}>Signup</Button>
+            <Button bg={"yellow"}m color={"green"} onClick={()=>{
+                    nav("/notes")
+            }}>All Notes</Button>
+            <Button bg={"yellow"}m color={"green"}  onClick={()=>{
+                   nav("/register")
+            }}>Signup</Button>
+            <Button bg={"yellow"}m color={"green"}  onClick={()=>{
+                    nav("/login")
+            }}>Login</Button>
+            
               <Button bg={"yellow"} onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>

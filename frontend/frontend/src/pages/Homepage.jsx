@@ -1,16 +1,15 @@
-import { Box, Heading, Image,Text } from "@chakra-ui/react";
-import { Navbar } from "../components/Homepage/Navbar";
+import { Box, Heading, Image, Text } from "@chakra-ui/react";
+//import { Navbar } from "../components/Homepage/Navbar";
 import note from "../assets/noteh.png";
 
 export default function Homepage() {
   return (
     <Box padding={8}>
-      <Navbar />
-      <Image position={"absolute"} right={0} w={500} src={note} />
-      <Heading mt={16} textAlign={"start"} size={"x1"}>
+      <Image position="absolute" right={0} w={500} src={note} />
+      <Heading mt={16} textAlign="start" size="xl">
         Note App
       </Heading>
-      <Text mt={8} maxW={"50%"} textAlign={"justify"}>
+      <Text mt={8} maxW="50%" textAlign="justify">
         Do you need a simple and effective way to organize your thoughts, tasks,
         and ideas? Do you want to access your notes anytime, anywhere, and on
         any device? Do you want to customize your notes with different colors,

@@ -1,7 +1,7 @@
 import {Box} from "@chakra-ui/react";
 
-export default function Notes(){
+export default function NotesPage(){
     return <Box>
-        Sign up page
+        Notespage
     </Box>
 }
