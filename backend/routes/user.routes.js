@@ -29,7 +29,7 @@ userRouter.post("/register", async (req, res) => {
   });
 });
 
-userRouter.post("/login", async (req, res) => {
+userRouter.get("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -50,8 +50,8 @@ userRouter.post("/login", async (req, res) => {
         });
       }
       if (result) {
-        const token = jwt.sign({ userId: user._id }, "asmare", {
-          expiresIn: "1min", // You can set the token expiration time
+        const token = jwt.sign({ userId: user._id }, {
+          expiresIn: "80min", 
         });
 
         res.send({

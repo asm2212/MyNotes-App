@@ -10,7 +10,7 @@ noteRouter.use(authenticator);
 
 noteRouter.get("/", (req, res) => {
   let token = req.headers.authorization;
-  jwt.verify(token, "asmare", async (error, decode) => {
+  jwt.verify(token,  async (error, decode) => {
     if (error) {
       return res.send({
         message: "Token verification failed",
@@ -36,10 +36,47 @@ noteRouter.get("/", (req, res) => {
 
 noteRouter.post("/create", async (req, res) => {
   try {
-    let note = new NoteModel(req.body);
-    await note.save();
+    const token = req.headers.authorization;
+    jwt.verify(token,  async (error, decode) => {
+      if (error) {
+        return res.send({
+          message: "Token verification failed",
+          status: 0,
+        });
+      }
+      
+      const { title, body } = req.body;
+      const userId = decode.userId;
+
+      try {
+        const note = new NoteModel({ title, body, user: userId });
+        await note.save();
+        res.send({
+          message: "Note Created",
+          status: 1,
+        });
+      } catch (error) {
+        res.send({
+          message: error.message,
+          status: 0,
+        });
+      }
+    });
+  } catch (error) {
     res.send({
-      message: "Note Created",
+      message: "Error processing request",
+      status: 0,
+    });
+  }
+});
+
+
+noteRouter.patch("/", async (req, res) => {
+  const { id } = req.headers;
+  try {
+    await NoteModel.findByIdAndUpdate({ _id: id }, req.body);
+    res.send({
+      message: "Note updated",
       status: 1,
     });
   } catch (error) {
@@ -50,37 +87,22 @@ noteRouter.post("/create", async (req, res) => {
   }
 });
 
-noteRouter.patch("/",async(req,res) => {
-    let{id} = req.headers
-    try {
-        await NoteModel.findByIdAndUpdate({_id:id},req.body)
-        res.send({
-            message:"note updated",
-            status:1
-        })
-    } catch (error) {
-        res.send({
-            message:error.message,
-            status:0
-        })
-    }
-})
 
-noteRouter.delete("/"),async(req,res) =>{
-    let id = req.headers
-    try {
-        await NoteModel.findByIdAndDelete({_id:id})
-        res.send({
-            message:"note deleted",
-            status:1
-        })
-    } catch (error) {
-        res.send({
-            message:error.message,
-            status:0
-        })
-    }
-}
+noteRouter.delete("/", async (req, res) => {
+  const { id } = req.headers;
+  try {
+    await NoteModel.findByIdAndDelete({ _id: id });
+    res.send({
+      message: "Note deleted",
+      status: 1,
+    });
+  } catch (error) {
+    res.send({
+      message: error.message,
+      status: 0,
+    });
+  }
+});
 
 module.exports = {
   noteRouter,

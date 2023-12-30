@@ -17,6 +17,7 @@ import { getUser } from "../Redux/users/user.actions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
+import { BASE_URL } from "../constants/config";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function SignupPage() {
       const emailValue = email;
 
 
-      let data = await axios.post("http://localhost:5001/user/register", {
+      let data = await axios.post(BASE_URL+"/user/register", {
         name,
         email, // Use the email state
         password,

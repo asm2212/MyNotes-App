@@ -43,33 +43,68 @@ import {
           loading: false,
           error: true,
         };
+
+        case CREATE_NOTES_LOADING:
+          return {
+            ...state,
+            loading: true,
+          };
+    
+        case CREATE_NOTES_SUCCESS:
+          return {
+            ...state,
+            loading: false,
+            error: false,
+          };
+        case CREATE_NOTES_ERROR:
+          return {
+            ...state,
+            loading: false,
+            error: true,
+          };
+
+          case UPDATE_NOTES_LOADING:
+            return {
+              ...state,
+              loading: true,
+            };
+      
+          case UPDATE_NOTES_SUCCESS:
+            return {
+              ...state,
+              loading: false,
+              error: false,
+            };
+          case UPDATE_NOTES_ERROR:
+            return {
+              ...state,
+              loading: false,
+              error: true,
+            };
+
+            case DELETE_NOTES_LOADING:
+              return {
+                ...state,
+                loading: true,
+              };
+        
+            case DELETE_NOTES_SUCCESS:
+              return {
+                ...state,
+                loading: false,
+                error: false,
+              };
+            case DELETE_NOTES_ERROR:
+              return {
+                ...state,
+                loading: false,
+                error: true,
+              };
+    
   
-      case CREATE_NOTES_LOADING:
-      case UPDATE_NOTES_LOADING:
-      case DELETE_NOTES_LOADING:
-        return {
-          ...state,
-          loading: true,
-        };
+
   
-      case CREATE_NOTES_SUCCESS:
-      case UPDATE_NOTES_SUCCESS:
-      case DELETE_NOTES_SUCCESS:
-        return {
-          ...state,
-          loading: false,
-          error: false,
-          data: payload,
-        };
-  
-      case CREATE_NOTES_ERROR:
-      case UPDATE_NOTES_ERROR:
-      case DELETE_NOTES_ERROR:
-        return {
-          ...state,
-          loading: false,
-          error: true,
-        };
+     
   
       default:
         return state;

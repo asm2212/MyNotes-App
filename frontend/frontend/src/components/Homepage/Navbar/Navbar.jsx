@@ -33,7 +33,7 @@ export default function Navbar() {
   const nav = useNavigate()
   return (
     <>
-      <Box zIndex={1000} position={"fixed"} w={"100%"} box-shadow={"rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"}  bg={"yellow"} px={4}>
+      <Box zIndex={1000} position={"fixed"} top={0} w={"100%"} box-shadow={"rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"}  bg={"yellow"} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box fontWeight={"bold"} cursor={"pointer"} onClick={()=>{
             nav("/")

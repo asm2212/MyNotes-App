@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/UserModel");
+const {NoteModel} = require("../models/NoteModel");
 const userRouter = express.Router();
 const bcrypt = require("bcrypt");
 
@@ -14,7 +15,7 @@ function authenticator(req, res, next) {
     });
   }
 
-  jwt.verify(token, "asmare", async (err, decode) => {
+  jwt.verify(token, async (err, decode) => {
     if (err) {
       return res.send({
         message: "Token is not valid. Please log in.",

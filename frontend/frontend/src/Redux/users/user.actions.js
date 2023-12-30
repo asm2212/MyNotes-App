@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { LOGIN_USER_ERROR, LOGIN_USER_LOADING, LOGIN_USER_SUCCESS } from './user.types';
+import {BASE_URL} from '../../constants/config';
 
 export const getUser = (obj) => async (dispatch) => {
   dispatch({
@@ -7,7 +8,7 @@ export const getUser = (obj) => async (dispatch) => {
   });
 
   try {
-    const data = await axios.post("http://localhost:5001/user/login",
+    const data = await axios.post(BASE_URL+"/user/login",
     {
         method:"post",
         data:obj
