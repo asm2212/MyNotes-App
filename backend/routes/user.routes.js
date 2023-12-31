@@ -50,7 +50,7 @@ userRouter.get("/login", async (req, res) => {
         });
       }
       if (result) {
-        const token = jwt.sign({ userId: user._id }, {
+        const token = jwt.sign({ userId: user._id },"asmare" ,{
           expiresIn: "80min", 
         });
 
