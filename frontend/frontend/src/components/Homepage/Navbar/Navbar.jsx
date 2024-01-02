@@ -1,11 +1,9 @@
-
-'use client'
-
+import { ReactNode } from 'react';
 import {
   Box,
   Flex,
   Avatar,
-  Text,
+  Link,
   Button,
   Menu,
   MenuButton,
@@ -17,40 +15,39 @@ import {
   Stack,
   useColorMode,
   Center,
-} from '@chakra-ui/react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import { useNavigate } from 'react-router'
-
-interface Props {
-  children: React.ReactNode
-}
-
-
+} from '@chakra-ui/react';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { LOGOUT } from '../../../Redux/users/user.types';
 
 export default function Navbar() {
-  const { colorMode, toggleColorMode } = useColorMode()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch()
+  const {auth,token,loading,error} = useSelector((state)=>state.userReducer)
+  console.log(auth)
+
   const nav = useNavigate()
   return (
     <>
-      <Box zIndex={1000} position={"fixed"} top={0} w={"100%"} box-shadow={"rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;"}  bg={"yellow"} px={4}>
+      <Box zIndex={1000} position={"fixed"} top={0} w={"100%"}  boxShadow={"rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;"}  bg={"yellowgreen"} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box fontWeight={"bold"} cursor={"pointer"} onClick={()=>{
             nav("/")
-          }} color="green">Notes App</Box>
+          }} color="white">Notes App</Box>
 
-          <Flex alignItems={'center'}> 
+          <Flex alignItems={'center'}>
             <Stack alignItems={"center"} direction={'row'} spacing={7}>
-            <Button bg={"yellow"}m color={"green"} onClick={()=>{
+                <Button display={auth==true?"block":"none"}  bg={"yellow"}m color={"green"} onClick={()=>{
                     nav("/notes")
-            }}>All Notes</Button>
-            <Button bg={"yellow"}m color={"green"}  onClick={()=>{
-                   nav("/register")
-            }}>Signup</Button>
-            <Button bg={"yellow"}m color={"green"}  onClick={()=>{
+                }}>All Notes</Button>
+                <Button display={auth==true?"none":"block"}  bg={"yellow"}m color={"green"} onClick={()=>{
+                    nav("/register")
+                }}>Sign up</Button>
+                <Button display={auth==true?"none":"block"} bg={"yellow"}m color={"green"} onClick={()=>{
                     nav("/login")
-            }}>Login</Button>
-            
+                }}>Login</Button>
               <Button bg={"yellow"} onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
@@ -85,7 +82,9 @@ export default function Navbar() {
                   <MenuDivider />
                   <MenuItem>Your Servers</MenuItem>
                   <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem onClick={()=>{
+                    dispatch({type:LOGOUT})
+                  }}>Logout</MenuItem>
                 </MenuList>
               </Menu>
             </Stack>
@@ -93,5 +92,5 @@ export default function Navbar() {
         </Flex>
       </Box>
     </>
-  )
+  );
 }
