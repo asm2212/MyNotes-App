@@ -1,8 +1,9 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/UserModel");
-const userRouter = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const userRouter = express.Router();
 
 userRouter.get("/", (req, res) => {
   res.send("All the user");
@@ -10,14 +11,13 @@ userRouter.get("/", (req, res) => {
 
 userRouter.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-
-  bcrypt.hash(password, 5, async function (error, hash) {
-    if (error) return res.send({ message: "something went wrong ", status: 0 });
+  bcrypt.hash(password, 5, async function (err, hash) {
+    if (err) return res.send({ message: "somthing went wrong", status: 0 });
     try {
       let user = new UserModel({ name, email, password: hash });
       await user.save();
       res.send({
-        message: "user created",
+        message: "User created",
         status: 1,
       });
     } catch (error) {
@@ -29,43 +29,38 @@ userRouter.post("/register", async (req, res) => {
   });
 });
 
-userRouter.get("/login", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  let option ={
+    expiresIn:"3m"
+  }
 
   try {
-    const user = await UserModel.findOne({ email });
-
-    if (!user) {
-      return res.send({
+    let data = await UserModel.find({ email });
+    if (data.length > 0) {
+      let token = jwt.sign({ userId: data[0]._id }, "saurabh",option);
+      bcrypt.compare(password, data[0].password, function (err, result) {
+        if (err)
+          return res.send({ message: "Somthing went wrong:" + err, status: 0 });
+        if (result) {
+          res.send({
+            message: "User logged in successfully",
+            token: token,
+            status: 1,
+          });
+        } else {
+          res.send({
+            message: "Incorrect password",
+            status: 0,
+          });
+        }
+      });
+    } else {
+      res.send({
         message: "User does not exist",
         status: 0,
       });
     }
-
-    bcrypt.compare(password, user.password, function (error, result) {
-      if (error) {
-        return res.send({
-          message: "something went wrong" + error,
-          status: 0,
-        });
-      }
-      if (result) {
-        const token = jwt.sign({ userId: user._id },"asmare" ,{
-          expiresIn: "80min", 
-        });
-
-        res.send({
-          message: "Login successful",
-          token: token,
-          status: 1,
-        });
-      } else {
-        res.send({
-          message: "Invalid Password",
-          status: 0,
-        });
-      }
-    });
   } catch (error) {
     res.send({
       message: error.message,

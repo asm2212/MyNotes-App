@@ -27,6 +27,7 @@ Setup: Once the installation is complete, you can run the application by executi
 bash
 Copy code
 npm start
+
 💡 Usage
 To use MyNotes, simply follow these steps:
 
@@ -48,4 +49,4 @@ A big thank you to everyone who has contributed to this project, raised issues, 
 
 forthebadgeforthebadgeforthebadge
 
-Please replace "yourusername" and "mynotes" with your actual GitHub username and repository name, respectively. Also, update the installation instructions and pre-built binary executable download link if you are distributing a compiled version of your application. Lastly, remember to add more detailed information about your project and include relevant screenshots or gifs to help users understand your project better. Good luck with your MyNotes App! 🥳🎉🌟
+"asm2212" and "MyNotes-App" . Also, update the installation instructions and pre-built binary executable download link if you are distributing a compiled version of your application.Good luck with your MyNotes App! 🥳🎉🌟
