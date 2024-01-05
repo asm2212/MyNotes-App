@@ -1,6 +1,9 @@
-import React from "react";
-import { Box, Flex, Image, VStack } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import {
+  Box,
+  Flex,
+  Image,
+  VStack,
   FormControl,
   FormLabel,
   Input,
@@ -12,23 +15,25 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../Redux/users/user.actions";
 
 export default function LoginPage() {
   const nav = useNavigate();
-  const { auth, token, loading, error } = useSelector((state) => state.userReducer);
-  console.log(auth, token);
-
-  if (auth) {
-    nav("/notes");
-  }
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { auth, token, loading, error } = useSelector(
+    (state) => state.userReducer
+  );
   const dispatch = useDispatch();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (auth) {
+      nav("/notes");
+    }
+  }, [auth, nav]);
 
   const handleLogin = () => {
     dispatch(getUser({ email, password }));
@@ -42,6 +47,7 @@ export default function LoginPage() {
           "https://img.freepik.com/free-vector/login-concept-illustration_114360-739.jpg?w=740&t=st=1676630553~exp=1676631153~hmac=6cbdb020ef439ca463660edbc265da0d05f487d529f69f814ee3f5de6e0f54cc"
         }
       ></Image>
+
       <VStack w={"50%"}>
         <Flex
           minH={"100vh"}
@@ -77,10 +83,16 @@ export default function LoginPage() {
                   <Input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                   />
                 </FormControl>
-              
+                <Checkbox
+                  onChange={() => setShowPassword(!showPassword)}
+                  colorScheme="blue"
+                >
+                  Show Password
+                </Checkbox>
+
                 <Stack spacing={10}>
                   <Stack
                     direction={{ base: "column", sm: "row" }}
@@ -100,6 +112,11 @@ export default function LoginPage() {
                   >
                     Sign in
                   </Button>
+                  {error && (
+                    <Text color="red.500" fontSize="sm">
+                      {error}
+                    </Text>
+                  )}
                 </Stack>
               </Stack>
             </Box>

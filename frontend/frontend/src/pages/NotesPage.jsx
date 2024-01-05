@@ -17,27 +17,38 @@ import {
 export default function NotesPage() {
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector((state) => state.noteReducer);
-  console.log(data);
   const [notes, setNotes] = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const initialRef = useRef(null)
-  const finalRef = useRef(null)
-  const [title,setTitle] = useState("")
-  const [body,setBody] = useState("")
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [creatingNote, setCreatingNote] = useState(false);
 
   useEffect(() => {
     dispatch(getNotes());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setNotes(data);
   }, [data]);
 
-  const createNote =()=>{
-    dispatch(createNotes({title,body}))
-    onClose()
-  }
+  const createNote = () => {
+    if (!title.trim() || !body.trim()) {
+      alert("Please enter both title and description.");
+      return;
+    }
+
+    setCreatingNote(true);
+    dispatch(createNotes({ title, body }))
+      .then(() => {
+        // Clear the form on success
+        setTitle("");
+        setBody("");
+        onClose();
+      })
+      .finally(() => setCreatingNote(false));
+  };
 
   return (
     <Box mt={20} padding={8}>

@@ -6,65 +6,63 @@ const jwt = require("jsonwebtoken");
 const userRouter = express.Router();
 
 userRouter.get("/", (req, res) => {
-  res.send("All the user");
+  res.send("All the users");
 });
 
 userRouter.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  bcrypt.hash(password, 5, async function (err, hash) {
-    if (err) return res.send({ message: "somthing went wrong", status: 0 });
-    try {
-      let user = new UserModel({ name, email, password: hash });
-      await user.save();
-      res.send({
-        message: "User created",
-        status: 1,
-      });
-    } catch (error) {
-      res.send({
-        message: error.message,
-        status: 0,
-      });
-    }
-  });
+  
+  try {
+    const hash = await bcrypt.hash(password, 5);
+    const user = new UserModel({ name, email, password: hash });
+    await user.save();
+    
+    res.status(200).send({
+      message: "User created",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed to create user",
+      status: 0,
+      error: error.message,
+    });
+  }
 });
 
 userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  let option ={
-    expiresIn:"3m"
-  }
-
+  
   try {
-    let data = await UserModel.find({ email });
-    if (data.length > 0) {
-      let token = jwt.sign({ userId: data[0]._id }, "saurabh",option);
-      bcrypt.compare(password, data[0].password, function (err, result) {
-        if (err)
-          return res.send({ message: "Somthing went wrong:" + err, status: 0 });
-        if (result) {
-          res.send({
-            message: "User logged in successfully",
-            token: token,
-            status: 1,
-          });
-        } else {
-          res.send({
-            message: "Incorrect password",
-            status: 0,
-          });
-        }
-      });
+    const user = await UserModel.findOne({ email });
+
+    if (user) {
+      const result = await bcrypt.compare(password, user.password);
+
+      if (result) {
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        res.status(200).send({
+          message: "User logged in successfully",
+          token: token,
+          status: 1,
+        });
+      } else {
+        res.status(401).send({
+          message: "Incorrect password",
+          status: 0,
+        });
+      }
     } else {
-      res.send({
+      res.status(404).send({
         message: "User does not exist",
         status: 0,
       });
     }
   } catch (error) {
-    res.send({
-      message: error.message,
+    res.status(500).send({
+      message: "Error during login",
       status: 0,
+      error: error.message,
     });
   }
 });

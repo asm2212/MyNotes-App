@@ -8,10 +8,11 @@ const noteSchema = mongoose.Schema(
   },
   {
     versionKey: false,
+    collection: "notes", 
   }
 );
 
-const NoteModel = mongoose.model("note", noteSchema);
+const NoteModel = mongoose.model("Note", noteSchema); 
 
 module.exports = {
   NoteModel,

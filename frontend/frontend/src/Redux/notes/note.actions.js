@@ -1,157 +1,127 @@
-import axios from "axios"
-import { useSelector } from "react-redux"
-import { BASE_URL } from "../../constants/config"
-import { store } from "../store"
-import { LOGOUT } from "../users/user.types"
-import { CREATE_NOTES_ERROR, CREATE_NOTES_LOADING, CREATE_NOTES_SUCCESS, DELETE_NOTES_ERROR, DELETE_NOTES_LOADING, DELETE_NOTES_SUCCESS, GET_NOTES_ERROR, GET_NOTES_LOADING, GET_NOTES_SUCCESS, UPDATE_NOTES_ERROR, UPDATE_NOTES_LOADING, UPDATE_NOTES_SUCCESS } from "./note.types"
+import axios from "axios";
+import { store } from "../store";
+import { LOGOUT } from "../users/user.types";
+import {
+  CREATE_NOTES_ERROR,
+  CREATE_NOTES_LOADING,
+  CREATE_NOTES_SUCCESS,
+  DELETE_NOTES_ERROR,
+  DELETE_NOTES_LOADING,
+  DELETE_NOTES_SUCCESS,
+  GET_NOTES_ERROR,
+  GET_NOTES_LOADING,
+  GET_NOTES_SUCCESS,
+  UPDATE_NOTES_ERROR,
+  UPDATE_NOTES_LOADING,
+  UPDATE_NOTES_SUCCESS,
+} from "./note.types";
+import { BASE_URL } from "../../constants/config";
 
+const API_BASE_URL = BASE_URL;
 
-export const getNotes=()=>async(dispatch)=>{
-    const {token} = store.getState().userReducer
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+});
 
-    dispatch({type:GET_NOTES_LOADING})
-    try {
-        
-        const res= await axios(BASE_URL+"/note",{
-            method:"get",
-            headers:{
-                Authorization:token
-            }
-        })
+const makeApiRequest = async (method, endpoint, data = null, headers = {}) => {
+  const { token } = store.getState().userReducer;
 
-        const {status,message,data} = res.data
-        console.log(message)
-        if(status==1){
-            
-        dispatch({type:GET_NOTES_SUCCESS,payload:data})
-        }else if(status==2){
-            dispatch({type:LOGOUT})
-        }else{
-            dispatch({type:GET_NOTES_ERROR})
+  try {
+    const response = await axiosInstance({
+      method,
+      url: endpoint,
+      data,
+      headers: {
+        Authorization: token,
+        ...headers,
+      },
+    });
 
-        }
-
-    } catch (error) {
-        dispatch({type:GET_NOTES_ERROR})
-
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Server Error:", error.response.data);
+    } else if (error.request) {
+      console.error("Request Error:", error.request);
+    } else {
+      console.error("General Error:", error.message);
     }
 
+    throw error;
+  }
+};
 
+export const getNotes = () => async (dispatch) => {
+  dispatch({ type: GET_NOTES_LOADING });
 
-}
+  try {
+    const { status, message, data } = await makeApiRequest("get", "/note");
 
-
-export const createNotes=(obj)=>async(dispatch)=>{
-    const {token} = store.getState().userReducer
-
-    dispatch({type:CREATE_NOTES_LOADING})
-    try {
-        
-        const res= await axios(BASE_URL+"/note/create",{
-            method:"post",
-            data:obj,
-            headers:{
-                Authorization:token
-            }
-        })
-
-        const {status,message} = res.data
-        console.log(message)
-        if(status==1){
-            
-        dispatch({type:CREATE_NOTES_SUCCESS})
-        dispatch(getNotes())
-        }else if(status==2){
-            dispatch({type:LOGOUT})
-        }else{
-            dispatch({type:CREATE_NOTES_ERROR})
-
-        }
-
-    } catch (error) {
-        dispatch({type:CREATE_NOTES_ERROR})
-
+    if (status === 1) {
+      dispatch({ type: GET_NOTES_SUCCESS, payload: data });
+    } else if (status === 2) {
+      dispatch({ type: LOGOUT });
+    } else {
+      dispatch({ type: GET_NOTES_ERROR });
     }
+  } catch (error) {
+    dispatch({ type: GET_NOTES_ERROR });
+  }
+};
 
+export const createNotes = (obj) => async (dispatch) => {
+  dispatch({ type: CREATE_NOTES_LOADING });
 
+  try {
+    const { status, message } = await makeApiRequest("post", "/note/create", obj);
 
-}
-
-
-
-export const deleteNotes=(id)=>async(dispatch)=>{
-    const {token} = store.getState().userReducer
-
-    dispatch({type:DELETE_NOTES_LOADING})
-    try {
-        
-        const res= await axios(BASE_URL+"/note/",{
-            method:"delete",
-            headers:{
-                Authorization:token,
-                id:id
-            }
-        })
-
-        const {status,message} = res.data
-        console.log(message)
-        if(status==1){
-            
-        dispatch({type:DELETE_NOTES_SUCCESS})
-        dispatch(getNotes())
-
-        }else if(status==2){
-            dispatch({type:LOGOUT})
-        }else{
-            dispatch({type:DELETE_NOTES_ERROR})
-
-        }
-
-    } catch (error) {
-        dispatch({type:DELETE_NOTES_ERROR})
-
+    if (status === 1) {
+      dispatch({ type: CREATE_NOTES_SUCCESS });
+      dispatch(getNotes());
+    } else if (status === 2) {
+      dispatch({ type: LOGOUT });
+    } else {
+      dispatch({ type: CREATE_NOTES_ERROR });
     }
+  } catch (error) {
+    dispatch({ type: CREATE_NOTES_ERROR });
+  }
+};
 
+export const deleteNotes = (id) => async (dispatch) => {
+  dispatch({ type: DELETE_NOTES_LOADING });
 
+  try {
+    const { status, message } = await makeApiRequest("delete", "/note/", null, { id });
 
-}
-
-
-
-export const updateNotes=(id,obj)=>async(dispatch)=>{
-    const {token} = store.getState().userReducer
-
-    dispatch({type:UPDATE_NOTES_LOADING})
-    try {
-        
-        const res= await axios(BASE_URL+"/note",{
-            method:"patch",
-            data:obj,
-            headers:{
-                Authorization:token,
-                id:id
-            }
-        })
-
-        const {status,message} = res.data
-        console.log(message)
-        if(status==1){
-            
-        dispatch({type:UPDATE_NOTES_SUCCESS})
-        dispatch(getNotes())
-
-        }else if(status==2){
-            dispatch({type:LOGOUT})
-        }else{
-            dispatch({type:UPDATE_NOTES_ERROR})
-
-        }
-
-    } catch (error) {
-        dispatch({type:UPDATE_NOTES_ERROR})
-
+    if (status === 1) {
+      dispatch({ type: DELETE_NOTES_SUCCESS });
+      dispatch(getNotes());
+    } else if (status === 2) {
+      dispatch({ type: LOGOUT });
+    } else {
+      dispatch({ type: DELETE_NOTES_ERROR });
     }
+  } catch (error) {
+    dispatch({ type: DELETE_NOTES_ERROR });
+  }
+};
 
+export const updateNotes = (id, obj) => async (dispatch) => {
+  dispatch({ type: UPDATE_NOTES_LOADING });
 
+  try {
+    const { status, message } = await makeApiRequest("patch", "/note", obj, { id });
 
-}
+    if (status === 1) {
+      dispatch({ type: UPDATE_NOTES_SUCCESS });
+      dispatch(getNotes());
+    } else if (status === 2) {
+      dispatch({ type: LOGOUT });
+    } else {
+      dispatch({ type: UPDATE_NOTES_ERROR });
+    }
+  } catch (error) {
+    dispatch({ type: UPDATE_NOTES_ERROR });
+  }
+};
