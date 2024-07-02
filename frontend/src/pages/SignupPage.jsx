@@ -130,7 +130,7 @@ export default function SignupPage() {
                     Sign up
                   </Button>
                   <Text>
-                    Already have an account?{" "}
+                    Already have an Account?{" "}
                     <ReactRouterLink
                       to="/login"
                       className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none"
